@@ -108,14 +108,14 @@ class camCapture():
         import pickle
         handle = open("encoding.pickle","rb")
         self.database = pickle.load(handle)
-        
-    
+
+
     def close_database(self):
         import pickle
         handle = open("encoding.pickle","wb")
         pickle.dump(self.database,handle,protocol=pickle.HIGHEST_PROTOCOL)
         handle.close()
-        
+
     def image_preprocessing(self):
         faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
         img = cv2.imread("cam.jpg")
@@ -134,8 +134,8 @@ class camCapture():
                 cv2.imwrite("face.jpg",resize_img)
                 if self.check ==1 and self.inf is not None:
                     score = self.inf.verify("face.jpg",self.stored_encoding)
-                    print("Score:-{}".format(score))        
-                    if score<=0.85:
+                    print("Score:-  {}".format(score))
+                    if score<=0.7:
                         messagebox.showinfo("Success","Person Verified is "+str(self.rollno))
                     else:
                         messagebox.showinfo("Failure","Person is not "+str(self.rollno))
@@ -143,7 +143,7 @@ class camCapture():
             elif self.check == 0:
                 cv2.imwrite("images/"+self.rollno+".jpg",resize_img)
                 self.open_database()
-        
+
                 if self.database.get(self.rollno,"") == "":
                     from fr_utils import img_to_encoding
                     FRmodel = self.inf.returnModel()
@@ -153,6 +153,27 @@ class camCapture():
                 else :
                     messagebox.showinfo("Error","Roll No already exists")
                 return True
+            elif self.check == 2:
+                cv2.imwrite("images/"+self.rollno+".jpg",resize_img)
+                self.open_database()
+
+                from fr_utils import img_to_encoding
+                FRmodel = self.inf.returnModel()
+                self.database[self.rollno] = img_to_encoding("images/"+self.rollno+".jpg",FRmodel)
+                self.close_database()
+                messagebox.showinfo("Success","{} face is updated".format(self.rollno))
+                return True
+
+            elif self.check == 3:
+                messagebox.showinfo('Sucess', 'Your face has been captured')
+                cv2.imwrite("face.jpg",resize_img)
+                pr = self.inf.recognize("face.jpg")
+                if pr is not None:
+                    messagebox.showinfo("Success","The person is {}".format(pr))
+                else:
+                    messagebox.showinfo("Failure","This person is not in the database")
+                return True
+
         else:
             messagebox.showinfo('Error',
                                 'Take another picture with frontal face'
@@ -168,8 +189,9 @@ class camCapture():
         self.prevImg.save(self.filepath)
         if self.image_preprocessing() == True:
             self.finish = True
-            self.mainWindow.destroy()            
-        
+            self.cap.release()
+            self.mainWindow.destroy()
+
 
     def resume(self, event=0):
 

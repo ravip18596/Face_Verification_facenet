@@ -133,8 +133,30 @@ class FaceNetModel:
             
         return dist
 
-
-
+    def recognize(self,image_path):
+        import pickle
+        handle = open("encoding.pickle","rb")
+        database = pickle.load(handle)
+        handle.close()
+        
+        encoding = img_to_encoding(image_path=image_path,model=self.FRmodel)
+        min_dist = 100
+        person = None
+        for (key,val) in database.items():
+            dist = np.linalg.norm(encoding - val)
+            print("Key - {}, Distance:= {}".format(key,dist))
+            if dist<min_dist:
+                person = key
+                min_dist = dist
+                
+                
+        handle = open("encoding.pickle","wb")
+        pickle.dump(database,handle,protocol=pickle.HIGHEST_PROTOCOL)
+        handle.close()
+        if min_dist>0.85:
+            person = None
+        return person
+                
 
 #
 # verify("images/camera_0.jpg", "younes", database, FRmodel)

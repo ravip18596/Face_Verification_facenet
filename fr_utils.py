@@ -10,7 +10,7 @@ from keras.models import Model
 from keras.layers.normalization import BatchNormalization
 from keras.layers.pooling import MaxPooling2D, AveragePooling2D
 import h5py
-import matplotlib.pyplot as plt
+
 
 
 _FLOATX = 'float32'

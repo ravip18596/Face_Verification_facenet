@@ -46,7 +46,7 @@ class face_recog:
             #self.secondLabel.pack(side=LEFT,padx = 2,pady = 2)
             cwd = os.getcwd()
             dir1 = os.path.join(cwd,"images")
-            filepath = str(key)+".jpg"
+            filepath = str(key)+".png"
             dir2 = os.path.join(dir1,filepath)
             load = Image.open(dir2)
             photo = ImageTk.PhotoImage(load)
@@ -90,7 +90,7 @@ class face_recog:
             #self.secondLabel.pack(side=LEFT,padx = 2,pady = 2)
             cwd = os.getcwd()
             dir1 = os.path.join(cwd,"images")
-            filepath = str(key)+".jpg"
+            filepath = str(key)+".png"
             dir2 = os.path.join(dir1,filepath)
             load = Image.open(dir2)
             photo = ImageTk.PhotoImage(load)
@@ -119,7 +119,7 @@ class face_recog:
         ob1 = camCapture(root,1,self.rollno,inf,self.database[self.rollno])
 
     '''
-        score = inf.verify("face.jpg",self.rollno,self.database,self.FRmodel)
+        score = inf.verify("face.png",self.rollno,self.database,self.FRmodel)
         print("Score:-{}".format(score))
         if score<=0.7:
             messagebox.showinfo("Success","Person Verified is "+str(self.rollno))
@@ -148,7 +148,7 @@ class face_recog:
         if self.isOpenDB == False:
             open_database()
         del self.database[self.rollno]
-        os.remove("images/"+str(self.rollno)+".jpg")
+        os.remove("images/"+str(self.rollno)+".png")
         for widget in self.secondFrame.winfo_children():
             widget.destroy()
         self.func()
@@ -188,7 +188,7 @@ class face_recog:
 
         '''
         if self.database.get(self.rollno,"") == "":
-            self.database[self.rollno] = img_to_encoding("images/"+self.rollno+".jpg",self.FRmodel)
+            self.database[self.rollno] = img_to_encoding("images/"+self.rollno+".png",self.FRmodel)
             messagebox.showinfo("Info","Face added to the database")
         '''
 

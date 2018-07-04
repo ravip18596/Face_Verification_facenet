@@ -118,22 +118,22 @@ class camCapture():
 
     def image_preprocessing(self):
         faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
-        img = cv2.imread("cam.jpg")
+        img = cv2.imread("cam.png")
         gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
         face = faceCascade.detectMultiScale(gray,1.3,5)
         pad = 5
         if len(face)>0:
             for (x,y,w,h) in face:
-                # cv2.imwrite("face.jpg",img[y-pad:y+h+pad, x-pad:x+w+pad])
+                # cv2.imwrite("face.png",img[y-pad:y+h+pad, x-pad:x+w+pad])
                 face = img[y-pad:y+h+pad, x-pad:x+w+pad]
 
-            # img = cv2.imread("face.jpg")
+            # img = cv2.imread("face.png")
             resize_img = cv2.resize(face,(96,96))
             if self.check == 1:
                 messagebox.showinfo('Sucess', 'Your face has been captured')
-                cv2.imwrite("face.jpg",resize_img)
+                cv2.imwrite("face.png",resize_img)
                 if self.check ==1 and self.inf is not None:
-                    score = self.inf.verify("face.jpg",self.stored_encoding)
+                    score = self.inf.verify("face.png",self.stored_encoding)
                     print("Score:-  {}".format(score))
                     if score<=0.7:
                         messagebox.showinfo("Success","Person Verified is "+str(self.rollno))
@@ -141,33 +141,33 @@ class camCapture():
                         messagebox.showinfo("Failure","Person is not "+str(self.rollno))
                 return True
             elif self.check == 0:
-                cv2.imwrite("images/"+self.rollno+".jpg",resize_img)
+                cv2.imwrite("images/"+self.rollno+".png",resize_img)
                 self.open_database()
 
                 if self.database.get(self.rollno,"") == "":
                     from fr_utils import img_to_encoding
                     FRmodel = self.inf.returnModel()
-                    self.database[self.rollno] = img_to_encoding("images/"+self.rollno+".jpg",FRmodel)
+                    self.database[self.rollno] = img_to_encoding("images/"+self.rollno+".png",FRmodel)
                     messagebox.showinfo("Info","Face added to the database")
                     self.close_database()
                 else :
                     messagebox.showinfo("Error","Roll No already exists")
                 return True
             elif self.check == 2:
-                cv2.imwrite("images/"+self.rollno+".jpg",resize_img)
+                cv2.imwrite("images/"+self.rollno+".png",resize_img)
                 self.open_database()
 
                 from fr_utils import img_to_encoding
                 FRmodel = self.inf.returnModel()
-                self.database[self.rollno] = img_to_encoding("images/"+self.rollno+".jpg",FRmodel)
+                self.database[self.rollno] = img_to_encoding("images/"+self.rollno+".png",FRmodel)
                 self.close_database()
                 messagebox.showinfo("Success","{} face is updated".format(self.rollno))
                 return True
 
             elif self.check == 3:
                 messagebox.showinfo('Sucess', 'Your face has been captured')
-                cv2.imwrite("face.jpg",resize_img)
-                pr = self.inf.recognize("face.jpg")
+                cv2.imwrite("face.png",resize_img)
+                pr = self.inf.recognize("face.png")
                 if pr is not None:
                     messagebox.showinfo("Success","The person is {}".format(pr))
                 else:
@@ -184,7 +184,7 @@ class camCapture():
 
         # self.filepath=tk.filedialog.asksaveasfilename()
 
-        self.filepath = 'cam.jpg'
+        self.filepath = 'cam.png'
         #print('Output file to: ' + self.filepath)
         self.prevImg.save(self.filepath)
         if self.image_preprocessing() == True:
